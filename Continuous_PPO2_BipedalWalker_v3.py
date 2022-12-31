@@ -31,7 +31,7 @@ actor_dense2 = Dense(256,activation='tanh'    ,kernel_initializer=Orthogonal(gai
 actor_dense3 = Dense(64,activation='tanh' ,kernel_initializer=Orthogonal(gain=np.sqrt(2)) ,bias_initializer=Zeros())(actor_dense2)
 actor_output = Dense(num_actions,activation='tanh',kernel_initializer=Orthogonal(gain=0.01) ,bias_initializer=Zeros())(actor_dense3)
 sigma_output =  Dense(num_actions,activation='softplus',kernel_initializer=Orthogonal(gain=0.01) ,bias_initializer=Zeros())(actor_dense3)
-#Critic
+#Critic 
 
 '''critic_state_input = Input(shape=(num_states,))
 critic_dense1 = Dense(512,activation='tanh'    ,kernel_initializer=Orthogonal(gain=np.sqrt(2)) ,bias_initializer=Zeros())(critic_state_input)
@@ -43,8 +43,8 @@ critic_output = Dense(1,activation='linear' ,kernel_initializer=Orthogonal(gain=
 
 
 class EnvForTraining(gym.Env):
-    def __init__(self,env_name):
-        self.env = gym.make(env_name)    # The wrapper encapsulates the gym env
+    def __init__(self,env_name,hardcore=False):
+        self.env = gym.make(env_name,hardcore=hardcore)    # The wrapper encapsulates the gym env
         self.count = 0
     def step(self, action):
         obs, reward, done,truncted, info = self.env.step(action)   # calls the gym env methods
@@ -61,7 +61,7 @@ ppo2 = Continuous_PPO2.PPO2(state_space=num_states,
                 iteration=10,
                 warm_up=5,
                 batch_size = 256,
-                stop_score=250)# the size of replay buffer
+                stop_score= 200)# the size of replay buffer
 
 ppo2_agent = Continuous_PPO2.PPO2_Agent(ppo2=ppo2,
                             actor_state_input=actor_state_input,
@@ -70,8 +70,9 @@ ppo2_agent = Continuous_PPO2.PPO2_Agent(ppo2=ppo2,
                             critic_output=critic_output,
                             sigma_output=sigma_output
                             )
-env = EnvForTraining(env_name)
-total_reward_list,avg_reward_list = ppo2_agent.fit(env,episodes=50000)
+env = EnvForTraining(env_name,hardcore=False)
+
+total_reward_list,avg_reward_list = ppo2_agent.fit(env,episodes=2000)
 
 plt.plot(total_reward_list)
 plt.plot(avg_reward_list)

@@ -59,6 +59,7 @@ class Actor():
         
     def selecte_action(self,state):
         state = state[np.newaxis,:]
+        #print(state)
         probabilities = self.model.predict(state)[0]
         action = np.random.choice(self.action_space,p=probabilities)
         return action,probabilities

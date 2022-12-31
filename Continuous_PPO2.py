@@ -301,7 +301,7 @@ class PPO2_Agent():
                 # interaction with environment
                 next_state, reward, done, truncated, info = env.step(action)    
                 next_state = np.array(next_state)
-
+                
                 # state normalization
                 #state = self.state_normalization(state)
                 #print(state)
@@ -352,7 +352,9 @@ class PPO2_Agent():
         next_critic_values = self.critic.model.predict(np.array(next_states))
 
         # TD error and GAE(gen)
-        advantages, target = self.critic.GAE(rewards, dones, np.squeeze(critic_values), np.squeeze(next_critic_values))
+        
+        
+        advantages, target = self.critic.GAE(rewards, np.squeeze(dones), np.squeeze(critic_values), np.squeeze(next_critic_values))
         # Storage states advantage actions 
         self.storage_Mini_Batch(states,actions,old_log_prob,advantages,target)
         self.replay_buffer = []

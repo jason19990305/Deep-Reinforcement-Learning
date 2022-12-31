@@ -72,7 +72,7 @@ ppo2_agent = Discrete_PPO2.PPO2_Agent(ppo2=ppo2,
                             )
 
 env = EnvForTraining(env_name)
-total_reward_list,avg_reward_list = ppo2_agent.fit(env,episodes=30000)
+total_reward_list,avg_reward_list = ppo2_agent.fit(env,episodes=10)
 
 plt.plot(total_reward_list)
 plt.plot(avg_reward_list)
